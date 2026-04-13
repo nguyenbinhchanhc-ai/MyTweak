@@ -1,0 +1,19 @@
+name: Compile Dylib
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Theos
+        run: |
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          echo "THEOS=~/theos" >> $GITHUB_ENV
+      - name: Build Tweak
+        run: make package THEOS=~/theos
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: My-Dylib
+          path: .theos/obj/debug/*.dylib
